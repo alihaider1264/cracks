@@ -4,10 +4,11 @@ from tensorflow.keras import layers
 
 #FILTER OUT CORRUPTED IMAGES
 import os
-dataset_path = "data/train_small/"
+dataset = "surface-cracks/"
+dataset_path = "_data/"+dataset+"train/"
 
 num_skipped = 0
-for folder_name in ("crack", "nocrack"):
+for folder_name in ("Cracked", "Non-Cracked"):
     folder_path = os.path.join(dataset_path, folder_name)
     for fname in os.listdir(folder_path):
         fpath = os.path.join(folder_path, fname)
@@ -198,9 +199,9 @@ f_hist.close()
 
 #RUN INFERENCE ON NEW DATA
 f = open("accuracy-data.csv", "w")
-f.write("file,crack,nocrack\n")
-for fname in os.listdir("data/test/"):
-    test_image = "data/test/"+fname
+f.write("file,Cracked,Non-cracked\n")
+for fname in os.listdir("_data/"+dataset+"test/"):
+    test_image = "_data/"+dataset+"test/"+fname
     img = keras.preprocessing.image.load_img(
     test_image, target_size=image_size
     )
@@ -209,7 +210,7 @@ for fname in os.listdir("data/test/"):
 
     predictions = model.predict(img_array)
     score = predictions[0]
-    print(test_image + "This image is %.2f percent crack and %.2f percent nocrack."
+    print(test_image + "This image is %.2f percent positive and %.2f percent negative."
         % (100 * (1 - score), 100 * score))
     f.write(test_image+","+str(100 * (1 - score))+","+ str(100 * score)+"\n")
 
